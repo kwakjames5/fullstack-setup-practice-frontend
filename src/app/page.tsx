@@ -5,9 +5,14 @@ import axios from 'axios'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
+interface HealthResponse {
+  status: string
+  environment: string
+}
+
 export default function Home() {
   const [message, setMessage] = useState<string>('')
-  const [health, setHealth] = useState<any>(null)
+  const [health, setHealth] = useState<HealthResponse | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -18,7 +23,7 @@ export default function Home() {
         setMessage(response.data.message)
         
         // Test health endpoint
-        const healthResponse = await axios.get(`${API_BASE_URL}/api/health`)
+        const healthResponse = await axios.get<HealthResponse>(`${API_BASE_URL}/api/health`)
         setHealth(healthResponse.data)
       } catch (error) {
         console.error('Error fetching data:', error)
